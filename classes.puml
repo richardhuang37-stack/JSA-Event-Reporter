@@ -1,0 +1,59 @@
+@startuml
+
+class EBoardMember {
+  - name: String
+  - position: String
+  - email: String
+  + EBoardMember(name: String, position: String, email: String)
+  + getName(): String
+  + getPosition(): String
+  + getEmail(): String
+}
+
+class Task {
+  - description: String
+  - assignedMember: EBoardMember
+  - deadline: LocalDateTime
+  - completed: boolean
+  + Task(description: String, assignedMember: EBoardMember, deadline: LocalDateTime)
+  + markComplete(): void
+  + isCompleted(): boolean
+  + getAssignedMember(): EBoardMember
+  + getDescription(): String
+  + getDeadline(): LocalDateTime
+}
+
+class Event {
+  - name: String
+  - dateTime: LocalDateTime
+  - location: String
+  - tasks: List<Task>
+  - attendingMembers: List<EBoardMember>
+  + Event(name: String, dateTime: LocalDateTime, location: String)
+  + addTask(task: Task): void
+  + removeTask(task: Task): void
+  + confirmAttendance(member: EBoardMember): void
+  + removeAttendance(member: EBoardMember): void
+  + getTasks(): List<Task>
+  + getAttendingMembers(): List<EBoardMember>
+}
+
+class EventReporter {
+  - events: List<Event>
+  - members: List<EBoardMember>
+  + EventReporter()
+  + addEvent(event: Event): void
+  + removeEvent(event: Event): void
+  + addMember(member: EBoardMember): void
+  + getEvents(): List<Event>
+  + getMembers(): List<EBoardMember>
+  + generateSummary(event: Event): String
+}
+
+EventReporter "1" o-- "0..*" Event : manages
+EventReporter "1" o-- "0..*" EBoardMember : manages
+Event "1" *-- "0..*" Task : contains
+Task "0..*" --> "1" EBoardMember : assigned to
+Event "0..*" -- "0..*" EBoardMember : attends
+
+@enduml
